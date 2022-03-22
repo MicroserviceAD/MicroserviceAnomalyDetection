@@ -8,7 +8,7 @@ It is a mess and we need to cleanup the whole repository
    1. `minikube config set memory 16384`
    2. `minikube config set cpus 10`
 3. Create a profile for your cluster: `minikube profile CLUSTER_NAME`
-4. Start minikube: `minikube start --cni=cilium -p CLUSTER_NAME --memory 8192 --cpus 4`
+4. Start minikube: `minikube start --cni=cilium -p CLUSTER_NAME --memory 8192 --cpus 5`
 5. Deploy SockShop: `bash deploy_sockshop.sh`
 
 Check status of pods: `kubectl get pods --namespace sock-shop`
