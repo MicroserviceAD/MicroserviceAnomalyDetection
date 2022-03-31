@@ -1,38 +1,39 @@
-apiVersion: apps/v1 
+---
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: carts-db
+  name: orders-db
   labels:
-    name: carts-db
-  namespace: sock-shop-det
+    name: orders-db
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: carts-db
+      name: orders-db
   template:
     metadata:
       labels:
-        name: carts-db
+        name: orders-db
     spec:
       containers:
-      - name: carts-db
-        image: mongo
-        ports:
-        - name: mongo
-          containerPort: 27017
-        securityContext:
-          capabilities:
-            drop:
-              - all
-            add:
-              - CHOWN
-              - SETGID
-              - SETUID
-          readOnlyRootFilesystem: false 
-        volumeMounts:
-        - mountPath: /tmp
-          name: tmp-volume
+        - name: orders-db
+          image: mongo
+          ports:
+            - name: mongo
+              containerPort: 27017
+          securityContext:
+            capabilities:
+              drop:
+                - all
+              add:
+                - CHOWN
+                - SETGID
+                - SETUID
+            readOnlyRootFilesystem: false
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp-volume
       volumes:
         - name: tmp-volume
           emptyDir:
@@ -43,17 +44,17 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: carts-db
+  name: orders-db
   labels:
-    name: carts-db
-  namespace: sock-shop-det
+    name: orders-db
+  namespace: sock-shop
 spec:
   ports:
     # the port that this service should serve on
-  - port: 27017
-    targetPort: 27017
+    - port: 27017
+      targetPort: 27017
   selector:
-    name: carts-db
+    name: orders-db
 ---
 apiVersion: v1
 kind: Service
@@ -67,4 +68,6 @@ spec:
     # the port that this service should serve on
     - port: 27018
       targetPort: 27018
+  selector:
+      name: orders-db
 ---
