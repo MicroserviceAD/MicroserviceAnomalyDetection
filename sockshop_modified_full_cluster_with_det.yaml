@@ -55,3 +55,16 @@ spec:
   selector:
     name: carts-db
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: carts-db-det
+  labels:
+    name: carts-db-det
+  namespace: sock-shop-det
+spec:
+  ports:
+    # the port that this service should serve on
+    - port: 27018
+      targetPort: 27018
+---
