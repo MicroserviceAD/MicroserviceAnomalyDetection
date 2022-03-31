@@ -2,23 +2,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orders-db
+  name: user-db
   labels:
-    name: orders-db
+    name: user-db
   namespace: sock-shop-det
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: orders-db
+      name: user-db
   template:
     metadata:
       labels:
-        name: orders-db
+        name: user-db
     spec:
       containers:
-        - name: orders-db
-          image: mongo
+        - name: user-db
+          image: weaveworksdemos/user-db:0.3.0
           ports:
             - name: mongo
               containerPort: 27017
@@ -46,9 +46,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: orders-db
+  name: user-db
   labels:
-    name: orders-db
+    name: user-db
   namespace: sock-shop-det
 spec:
   ports:
@@ -56,14 +56,14 @@ spec:
     - port: 27017
       targetPort: 27017
   selector:
-    name: orders-db
+    name: user-db
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: orders-db-det
+  name: user-db-det
   labels:
-    name: orders-db-det
+    name: user-db-det
   namespace: sock-shop-det
 spec:
   ports:
@@ -71,5 +71,5 @@ spec:
     - port: 27018
       targetPort: 27018
   selector:
-      name: orders-db
+      name: user-db
 ---
