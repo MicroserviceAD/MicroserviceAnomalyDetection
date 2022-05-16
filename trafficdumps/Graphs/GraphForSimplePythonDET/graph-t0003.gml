@@ -74,42 +74,37 @@ graph [
   edge [
     source 0
     target 13
-    weight 14
+    weight 28
   ]
   edge [
     source 1
     target 5
-    weight 2
-  ]
-  edge [
-    source 1
-    target 11
-    weight 2
+    weight 4
   ]
   edge [
     source 2
+    target 13
+    weight 32
+  ]
+  edge [
+    source 3
     target 13
     weight 15
   ]
   edge [
     source 3
-    target 13
-    weight 28
-  ]
-  edge [
-    source 3
     target 10
-    weight 4
+    weight 2
   ]
   edge [
     source 4
     target 13
-    weight 32
+    weight 30
   ]
   edge [
     source 6
     target 13
-    weight 14
+    weight 28
   ]
   edge [
     source 7
@@ -119,17 +114,12 @@ graph [
   edge [
     source 8
     target 16
-    weight 4
+    weight 6
   ]
   edge [
     source 9
     target 13
     weight 16
-  ]
-  edge [
-    source 9
-    target 15
-    weight 2
   ]
   edge [
     source 10
@@ -139,16 +129,21 @@ graph [
   edge [
     source 11
     target 13
-    weight 15
+    weight 16
+  ]
+  edge [
+    source 12
+    target 13
+    weight 4
   ]
   edge [
     source 13
     target 16
-    weight 15
+    weight 32
   ]
   edge [
     source 13
     target 17
-    weight 15
+    weight 30
   ]
 ]

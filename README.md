@@ -100,8 +100,9 @@ Once the sock-shop completes deployment,
 
 ### SimpleHTTPPythonServer DET
 1. On users-db, start the python server on port 27018 : `python -m SimpleHTTPServer 27018`
-2. On catalogue-db use wget/curl to retrieve files : `curl 10.103.13.14:27018/bin/sh` or `wget 10.103.13.14:27018/bin/bash`
-3. Observe traffic in hubble
+2. Get IP Address of the service using `kubectl get services -o wide -n sock-shop` and looking for ip of `user-db-det` in the list.
+3. On catalogue-db use wget/curl to retrieve files : `curl 10.103.13.14:27018/bin/sh` or `wget 10.103.13.14:27018/bin/bash`
+4. Observe traffic in hubble
 
 ### DET using PaulSec/DET tool
 Assuming you have installed all the commands in the det_dependencies_to_install.txt on both the catalogue-db and user-db, follow the next steps:

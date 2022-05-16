@@ -72,83 +72,33 @@ graph [
     label "10.0.0.211"
   ]
   edge [
-    source 0
-    target 13
-    weight 14
-  ]
-  edge [
-    source 1
-    target 5
-    weight 2
-  ]
-  edge [
-    source 1
-    target 11
-    weight 2
-  ]
-  edge [
-    source 2
-    target 13
-    weight 15
-  ]
-  edge [
     source 3
     target 13
-    weight 28
+    weight 14
   ]
   edge [
     source 3
     target 10
-    weight 4
+    weight 2
   ]
   edge [
     source 4
-    target 13
-    weight 32
-  ]
-  edge [
-    source 6
-    target 13
-    weight 14
-  ]
-  edge [
-    source 7
-    target 17
-    weight 4
-  ]
-  edge [
-    source 8
-    target 16
-    weight 4
-  ]
-  edge [
-    source 9
-    target 13
-    weight 16
-  ]
-  edge [
-    source 9
     target 15
     weight 2
   ]
   edge [
-    source 10
-    target 14
-    weight 21
+    source 5
+    target 13
+    weight 12
   ]
   edge [
-    source 11
-    target 13
-    weight 15
+    source 10
+    target 14
+    weight 7
   ]
   edge [
     source 13
     target 16
-    weight 15
-  ]
-  edge [
-    source 13
-    target 17
-    weight 15
+    weight 3
   ]
 ]
