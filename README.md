@@ -113,7 +113,8 @@ Assuming you have installed all the commands in the det_dependencies_to_install.
 3. On catalogue-db,
    1. Open config-client.json and replace http port with 27018 on Line 5 and replace IP address with whatever IP you got for user db in metadata colleciton.
    2. After that run the following command to retrieve file that you wish to retrieve: 
-      1. `python det.py -c ./config-client.json -p http -f /etc/passwd`
+      1. For File : `python det.py -c ./config-client.json -p http -f /etc/passwd`
+      2. For Directory with multithreading : `python det.py -c ./config-client.json -p http -d /etc/`
    3. You can also configure max_time_sleep, min_time_sleep,max_bytes_read, min_bytes_read in the config files of both server and client
 
 
